@@ -150,10 +150,11 @@ namespace UltraBot
             {
                 var method = t.GetMethod("Trigger");
                 var result = method.Invoke(null,new object[]{this});
-                if(result != null && stateStack[0].GetType() != t)
+                if(result != null && (!stateStack.Any() || stateStack[0].GetType() != t))
                     changeState(result as BotAIState);
             }
-            stateStack[0].Run(this);
+            if(stateStack.Any())
+                stateStack[0].Run(this);
             if (Util.GetActiveWindowTitle() == "SSFIVAE")
             {
                 //For each key that was pressed the previous frame
@@ -185,8 +186,8 @@ namespace UltraBot
 
 
         #region State Management
-        private BotAIState previousState;
-        private List<BotAIState> stateStack = new List<BotAIState>();
+        public BotAIState previousState;
+        public List<BotAIState> stateStack = new List<BotAIState>();
         /// <summary>
         /// This function runs before any state.
         /// By overriding this function, you can have checks that force the bot into an arbitrary state based on triggers.
